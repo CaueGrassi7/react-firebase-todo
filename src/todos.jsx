@@ -49,7 +49,11 @@ function Todos({ user }) {
       },
       (err) => {
         console.error("Snapshot error: ", err);
-        setError(err.message);
+        if (err.code === "permission-denied") {
+          setError("Permission denied. Please sign in to view your todos.");
+        } else {
+          setError(err.message);
+        }
         // Mesmo com erro, definir todos como array vazio para não travar no spinner
         setTodos([]);
       }
@@ -73,6 +77,11 @@ function Todos({ user }) {
       setNewTitle("");
     } catch (err) {
       console.error("Error adding todo:", err);
+      if (err.code === "permission-denied") {
+        alert("Permission denied. Please make sure you are signed in.");
+      } else {
+        alert("Error adding todo. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -86,6 +95,9 @@ function Todos({ user }) {
       });
     } catch (err) {
       console.error("Error updating todo:", err);
+      if (err.code === "permission-denied") {
+        alert("Permission denied. Please make sure you are signed in.");
+      }
     }
   };
 
@@ -97,6 +109,11 @@ function Todos({ user }) {
       await deleteDoc(todoRef);
     } catch (err) {
       console.error("Error deleting todo:", err);
+      if (err.code === "permission-denied") {
+        alert("Permission denied. Please make sure you are signed in.");
+      } else {
+        alert("Error deleting todo. Please try again.");
+      }
     }
   };
 
@@ -125,6 +142,10 @@ function Todos({ user }) {
       setEditTitle("");
     } catch (err) {
       console.error("Error updating todo:", err);
+      if (err.code === "permission-denied") {
+        alert("Permission denied. Please make sure you are signed in.");
+        handleCancelEdit();
+      }
     }
   };
 
